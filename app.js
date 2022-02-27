@@ -3,7 +3,11 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
+
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+});
 
 const auth = require("./routes/auth");
 const usersRouter = require("./routes/users");
@@ -21,7 +25,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", auth);
