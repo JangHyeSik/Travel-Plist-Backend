@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const verifyToken = require("../middlewares/verifyToken");
 
-router.get("/", function (req, res, next) {
-  res.send("respond with a resource");
+router.get("/", verifyToken, function (req, res, next) {
+  res.json({ result: "success" });
 });
 
 module.exports = router;

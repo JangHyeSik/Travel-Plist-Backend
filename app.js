@@ -10,7 +10,7 @@ mongoose.connect(process.env.MONGO_URL, {
 });
 
 const auth = require("./routes/auth");
-const usersRouter = require("./routes/users");
+const users = require("./routes/users");
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", auth);
-app.use("/users", usersRouter);
+app.use("/users", users);
 
 app.use(function (req, res, next) {
   next(createError(404));
