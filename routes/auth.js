@@ -14,10 +14,22 @@ router.post("/", async function (req, res, next) {
     });
 
     if (user) {
+      const { travels } = await User.findOne({ email })
+        .populate("travels")
+        .lean()
+        .exec();
+
+      const registedUser = {
+        userId: user._id,
+        email: user.email,
+        username: user.username,
+        travels,
+      };
+
       res.status(201).json({
         result: "이미 등록된 사용자입니다.",
         data: {
-          user,
+          user: registedUser,
           token: accessToken,
         },
       });
