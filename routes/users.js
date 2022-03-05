@@ -1,9 +1,0 @@
-const express = require("express");
-const router = express.Router();
-const verifyToken = require("../middlewares/verifyToken");
-
-router.get("/", verifyToken, async function (req, res, next) {
-  res.json({ result: "success" });
-});
-
-module.exports = router;

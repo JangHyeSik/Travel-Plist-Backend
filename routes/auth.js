@@ -19,17 +19,13 @@ router.post("/", async function (req, res, next) {
         .lean()
         .exec();
 
-      const registedUser = {
-        userId: user._id,
-        email: user.email,
-        username: user.username,
-        travels,
-      };
-
       res.status(201).json({
         result: "이미 등록된 사용자입니다.",
         data: {
-          user: registedUser,
+          user: {
+            ...user,
+            travels,
+          },
           token: accessToken,
         },
       });

@@ -14,8 +14,8 @@ router.post("/", verifyToken, async (req, res, next) => {
     let travelLogs = [];
     for (let i = 0; i < differenceDay; i++) {
       travelLogs.push({
-        travelPlace: [],
-        travelDetail: [],
+        travelPlaces: [],
+        travelDetails: [],
         coordinates: [],
         travelDiary: {},
       });
@@ -34,6 +34,38 @@ router.post("/", verifyToken, async (req, res, next) => {
     });
 
     res.status(201).json({ result: "success", newTravel });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put("/:travelid/:travellogid", verifyToken, async (req, res, next) => {
+  const { travelid, travellogid } = req.params;
+  const { travelPlaces, travelDetails, coordinates } = req.body;
+
+  try {
+    const travel = await Travel.findById(travelid).lean();
+    const { travelLogs } = travel;
+
+    let travelLog = {};
+    for (let i = 0; i < travelLogs.length; i++) {
+      if (travelLogs[i]._id.toString() === travellogid) {
+        travelLog = {
+          ...travelLogs[i],
+          travelPlaces,
+          travelDetails,
+          coordinates,
+        };
+      }
+    }
+
+    const updatedTravel = await Travel.findByIdAndUpdate(
+      travelid,
+      { $set: { "travelLogs.$[travelLog]": travelLog } },
+      { arrayFilters: [{ "travelLog._id": travellogid }], new: true }
+    ).exec();
+
+    res.status(200).json({ result: "success", updatedTravel });
   } catch (err) {
     next(err);
   }
