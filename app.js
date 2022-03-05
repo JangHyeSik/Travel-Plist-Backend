@@ -10,7 +10,6 @@ mongoose.connect(process.env.MONGO_URL, {
 });
 
 const auth = require("./routes/auth");
-const users = require("./routes/users");
 const travels = require("./routes/travels");
 
 const app = express();
@@ -29,7 +28,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", auth);
-app.use("/users", users);
 app.use("/travels", travels);
 
 app.use(function (req, res, next) {
