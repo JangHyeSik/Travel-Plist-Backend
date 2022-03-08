@@ -13,11 +13,11 @@ const subTravelDiary = new mongoose.Schema({
 });
 
 const subTravelLogs = new mongoose.Schema({
-  travelPlace: {
+  travelPlaces: {
     type: Array,
     required: true,
   },
-  travelDetail: {
+  travelDetails: {
     type: Array,
     required: true,
   },

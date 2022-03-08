@@ -7,6 +7,7 @@ async function verifyToken(req, res, next) {
     await jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
       if (decode) {
         req.user = decode;
+
         next();
       }
     });
