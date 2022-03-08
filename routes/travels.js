@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const verifyToken = require("../middlewares/verifyToken");
 const User = require("../models/User");
 const Travel = require("../models/Travel");
+const verifyToken = require("../middlewares/verifyToken");
+const uploadFiles = require("../middlewares/uploadFiles");
 
 router.post("/", verifyToken, async (req, res, next) => {
   const { title, startDate, endDate, userId } = req.body;
@@ -70,5 +71,44 @@ router.put("/:travelid/:travellogid", verifyToken, async (req, res, next) => {
     next(err);
   }
 });
+
+router.put(
+  "/:travelid/:travellogid/:traveldiaryid",
+  verifyToken,
+  uploadFiles.fields([
+    { name: "image", maxCount: 1 },
+    { name: "audio", maxCount: 1 },
+  ]),
+  async (req, res, next) => {
+    const { travelid, travellogid } = req.params;
+    const { image, audio } = req.files;
+    const { travelDiaryText } = req.query;
+
+    const photoUrl = image ? image[0].location : "";
+    const audioUrl = audio ? audio[0].location : "";
+
+    try {
+      const travelDiary = {
+        photoUrl,
+        audioUrl,
+        diary: travelDiaryText,
+      };
+
+      const updatedTravel = await Travel.findByIdAndUpdate(
+        travelid,
+        {
+          $set: {
+            "travelLogs.$[travelLog].travelDiary": travelDiary,
+          },
+        },
+        { arrayFilters: [{ "travelLog._id": travellogid }], new: true }
+      );
+
+      res.json({ result: "success", updatedTravel });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 module.exports = router;
