@@ -111,4 +111,21 @@ router.put(
   }
 );
 
+router.delete("/:travelid", verifyToken, async (req, res, next) => {
+  const { travelid } = req.params;
+  const { userId } = req.query;
+
+  try {
+    const deletedTravel = await Travel.findByIdAndDelete(travelid);
+
+    await User.findByIdAndUpdate(userId, {
+      $pull: { travels: travelid },
+    });
+
+    res.json({ result: "success", deletedTravel });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
