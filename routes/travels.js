@@ -82,15 +82,15 @@ router.put(
   async (req, res, next) => {
     const { travelid, travellogid } = req.params;
     const { image, audio } = req.files;
-    const { travelDiaryText } = req.query;
+    const { travelDiaryText, photoUrl, recordedAudioUrl } = req.query;
 
-    const photoUrl = image ? image[0].location : "";
-    const audioUrl = audio ? audio[0].location : "";
+    const photoLocation = image ? image[0].location : photoUrl;
+    const audioLocation = audio ? audio[0].location : recordedAudioUrl;
 
     try {
       const travelDiary = {
-        photoUrl,
-        audioUrl,
+        photoUrl: photoLocation,
+        audioUrl: audioLocation,
         diary: travelDiaryText,
       };
 
