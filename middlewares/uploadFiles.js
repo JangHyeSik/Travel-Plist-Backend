@@ -15,11 +15,6 @@ const uploadFiles = multer({
     key: function (req, file, cb) {
       try {
         const fileType = file.mimetype.split("/")[0];
-
-        if (fileType !== "image" && fileType !== "audio") {
-          return cb(new Error(`Not ${fileType}`));
-        }
-
         const fileNameArray = file.originalname.split(".");
 
         cb(
