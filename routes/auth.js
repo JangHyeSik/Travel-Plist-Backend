@@ -8,7 +8,6 @@ router.post("/", async function (req, res, next) {
 
   try {
     const user = await User.findOne({ email }).lean().exec();
-
     const accessToken = await jwt.sign({ email }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
